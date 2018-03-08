@@ -55,8 +55,12 @@ create table seckill_success(
  key idx_create_time(create_time) 
 )engine=InnoDB default charset=utf8 comment '秒杀成功明细表';
 
-
+alter table seckill_success rename to success_killed;
 ```
+数据库 ------ 映射 ------ 对象 mybatis
+* xml提供SQL （方便不需要写在java代码中）
+* 注解提供SQL
+
 #### Service层设计
 
 #### Web设计
