@@ -58,8 +58,17 @@ create table seckill_success(
 alter table seckill_success rename to success_killed;
 ```
 数据库 ------ 映射 ------ 对象 mybatis
-* xml提供SQL （方便不需要写在java代码中）
+* xml提供SQL （推荐 方便不需要写在java代码中）
 * 注解提供SQL
+
+整合spring 只写接口不写实现
+
+别名org.seckill.entity.*    包扫描
+
+更少的配置 mapper    配置扫描
+
+DAO自动注入spring容器
+
 
 #### Service层设计
 

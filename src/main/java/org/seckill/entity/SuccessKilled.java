@@ -9,7 +9,7 @@ public class SuccessKilled {
 
     private long seckillId;
 
-    private int userPhone;
+    private long userPhone;
 
     private byte state;
 
