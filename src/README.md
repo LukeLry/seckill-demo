@@ -71,5 +71,8 @@ DAO自动注入spring容器
 
 
 #### Service层设计
+DAO层：接口设计 + SQL编写
+
+service接口设计 站在使用者的角度设计接口 参数越简单越好
 
 #### Web设计
