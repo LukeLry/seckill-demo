@@ -11,7 +11,7 @@ public class SuccessKilled {
 
     private long userPhone;
 
-    private byte state;
+    private short state;
 
     private Date createTime;
 

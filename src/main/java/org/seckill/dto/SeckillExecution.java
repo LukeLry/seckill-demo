@@ -2,28 +2,29 @@ package org.seckill.dto;
 
 import lombok.Data;
 import org.seckill.entity.SuccessKilled;
+import org.seckill.enums.SeckillStateEnum;
 
 @Data
 public class SeckillExecution {
 
     private long seckillId;
 
-    private byte state;
+    private int state;
 
     private String stateInfo;
 
     private SuccessKilled successKilled;
 
-    public SeckillExecution(long seckillId, byte state, String stateInfo, SuccessKilled successKilled) {
+    public SeckillExecution(long seckillId, SeckillStateEnum stateEnum, SuccessKilled successKilled) {
         this.seckillId = seckillId;
-        this.state = state;
-        this.stateInfo = stateInfo;
+        this.state = stateEnum.getState();
+        this.stateInfo = stateEnum.getStateInfo();
         this.successKilled = successKilled;
     }
 
-    public SeckillExecution(long seckillId, byte state, String stateInfo) {
+    public SeckillExecution(long seckillId, SeckillStateEnum stateEnum) {
         this.seckillId = seckillId;
-        this.state = state;
-        this.stateInfo = stateInfo;
+        this.state = stateEnum.getState();
+        this.stateInfo = stateEnum.getStateInfo();
     }
 }
