@@ -81,3 +81,19 @@ service接口设计 站在使用者的角度设计接口 参数越简单越好
 * 不是所有的方法需要事务
 
 #### Web设计
+
+什么是restful？一种优雅的URL的表达方式；资源的状态或者状态转移
+
+* get ---> 查询操作
+* post --> 添加/修改操作
+* put ---> 修改操作 
+* delete ---> 删除操作
+
+utl设计`/模块/资源/{标识}/集合1` `/user/{uid}/friends`
+
+秒杀API设计：
+* GET /seckill/list  秒杀列表
+* GET /seckill/{id}/detail 秒杀商品详情
+* GET /seckill/time/now  系统时间 
+* POST /seckill/{id}/exposer 暴露秒杀地址
+* GET /seckill/{id}/{md5}/execution 执行秒杀

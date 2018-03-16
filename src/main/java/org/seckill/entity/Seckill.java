@@ -15,7 +15,7 @@ public class Seckill {
 
     private Date startTime;
 
-    private Date endTIme;
+    private Date endTime;
 
     private Date createTime;
 
