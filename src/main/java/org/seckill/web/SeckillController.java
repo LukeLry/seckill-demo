@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
-import static org.seckill.dto.SeckillResult.success;
-
 @Controller
 @RequestMapping("/seckill")
 public class SeckillController {
@@ -40,18 +38,19 @@ public class SeckillController {
     @RequestMapping(value = "/{seckillId}/detail", method = RequestMethod.GET)
     public String detail(@PathVariable("seckillId") long seckillId, Model model) {
         Seckill seckill = seckillService.getById(seckillId);
-        if(seckill == null) {
+        if (seckill == null) {
             return "forward:/seckill/list";
         }
         model.addAttribute("seckill", seckill);
         return "detail";
     }
 
-    @RequestMapping(value = "/time/now", method = RequestMethod.GET)
+    @RequestMapping(value = "/time/now",
+            method = RequestMethod.GET,
+            produces = {"application/json;charset=UTF-8"})
     @ResponseBody
     public SeckillResult<Long> time() {
-        Date now = new Date();
-        return SeckillResult.success(now.getTime());
+        return SeckillResult.success(new Date().getTime());
     }
 
     @RequestMapping(value = "/{seckillId}/exposer",
@@ -77,7 +76,7 @@ public class SeckillController {
     public SeckillResult<SeckillExecution> execute(@PathVariable("seckillId") Long seckillId,
                                                    @PathVariable("md5") String md5,
                                                    @CookieValue(value = "killPhone", required = false) Long userPhone) {
-        if (userPhone ==  null) {
+        if (userPhone == null) {
             return SeckillResult.error("未注册");
         }
         try {

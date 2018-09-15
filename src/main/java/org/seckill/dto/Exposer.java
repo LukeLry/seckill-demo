@@ -19,14 +19,14 @@ public class Exposer {
         private final long seckillId;
 
         // optional arguments
-        private String  md5     = "";
-        private long    now     = 0;
-        private long    start   = 0;
-        private long    end     = 0;
+        private String md5 = "";
+        private long now = 0;
+        private long start = 0;
+        private long end = 0;
 
-        public Builder (boolean exposed, long seckillId) {
-            this.exposed    = exposed;
-            this.seckillId  = seckillId;
+        public Builder(boolean exposed, long seckillId) {
+            this.exposed = exposed;
+            this.seckillId = seckillId;
         }
 
         public Builder md5(String md5) {
@@ -38,10 +38,12 @@ public class Exposer {
             this.now = now;
             return this;
         }
+
         public Builder start(long start) {
             this.start = start;
             return this;
         }
+
         public Builder end(long end) {
             this.end = end;
             return this;
@@ -54,11 +56,36 @@ public class Exposer {
     }
 
     private Exposer(Builder builder) {
-        this.exposed    = builder.exposed;
-        this.md5        = builder.md5;
-        this.seckillId  = builder.seckillId;
-        this.now        = builder.now;
-        this.start      = builder.start;
-        this.end        = builder.end;
+        this.exposed = builder.exposed;
+        this.md5 = builder.md5;
+        this.seckillId = builder.seckillId;
+        this.now = builder.now;
+        this.start = builder.start;
+        this.end = builder.end;
     }
+
+    public boolean isExposed() {
+        return exposed;
+    }
+
+    public String getMd5() {
+        return md5;
+    }
+
+    public long getSeckillId() {
+        return seckillId;
+    }
+
+    public long getNow() {
+        return now;
+    }
+
+    public long getStart() {
+        return start;
+    }
+
+    public long getEnd() {
+        return end;
+    }
+
 }
