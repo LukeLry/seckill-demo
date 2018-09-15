@@ -1,10 +1,8 @@
 package org.seckill.dto;
 
-import lombok.Data;
 import org.seckill.entity.SuccessKilled;
 import org.seckill.enums.SeckillStateEnum;
 
-@Data
 public class SeckillExecution {
 
     private long seckillId;
