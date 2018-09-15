@@ -1,8 +1,5 @@
 package org.seckill.dto;
 
-import lombok.Data;
-
-@Data
 public class SeckillResult<T> {
 
     private boolean success;
@@ -11,13 +8,20 @@ public class SeckillResult<T> {
 
     private String error;
 
-    public SeckillResult(boolean success, String error) {
-        this.success = success;
-        this.error = error;
+    private SeckillResult() {}
+
+    public static <T> SeckillResult<T> error(String error) {
+        SeckillResult<T> result = new SeckillResult<T>();
+        result.success = false;
+        result.error = error;
+        return result;
     }
 
-    public SeckillResult(boolean success, T data) {
-        this.success = success;
-        this.data = data;
+    public static <T> SeckillResult<T> success(T data) {
+        SeckillResult<T> result = new SeckillResult<T>();
+        result.success = true;
+        result.data = data;
+        return result;
     }
+
 }

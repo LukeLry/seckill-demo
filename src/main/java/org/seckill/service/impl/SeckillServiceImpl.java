@@ -45,17 +45,17 @@ public class SeckillServiceImpl implements SeckillService {
     public Exposer exportSeckillUrl(long seckillId) {
         Seckill seckill = seckillDao.queryById(seckillId);
         if (seckill == null) {
-            return new Exposer(false, seckillId);
+            return new Exposer.Builder(false, seckillId).build();
         }
         Date startTime = seckill.getStartTime();
         Date endTime = seckill.getEndTime();
         Date nowTime = new Date();
         if (nowTime.getTime() < startTime.getTime() || nowTime.getTime() > endTime.getTime()) {
-             return new Exposer(false, seckillId,nowTime.getTime(),startTime.getTime(),endTime.getTime());
+             return new Exposer.Builder(false, seckillId).now(nowTime.getTime()).start(startTime.getTime()).end(endTime.getTime()).build();
         }
 
         String md5 = getMd5(seckillId);
-        return new Exposer(true, md5, seckillId);
+        return new Exposer.Builder(true, seckillId).md5(md5).build();
     }
 
     private String getMd5(long seckillId){
