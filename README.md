@@ -89,7 +89,7 @@ service接口设计 站在使用者的角度设计接口 参数越简单越好
 * put ---> 修改操作 
 * delete ---> 删除操作
 
-utl设计`/模块/资源/{标识}/集合1` `/user/{uid}/friends`
+url设计`/模块/资源/{标识}/集合1` `/user/{uid}/friends`
 
 秒杀API设计：
 * GET /seckill/list  秒杀列表
@@ -97,3 +97,7 @@ utl设计`/模块/资源/{标识}/集合1` `/user/{uid}/friends`
 * GET /seckill/time/now  系统时间 
 * POST /seckill/{id}/exposer 暴露秒杀地址
 * GET /seckill/{id}/{md5}/execution 执行秒杀
+
+#### 秒杀优化
+* 将sql语句进行调换，避免SQL执行串行化
+* 使用redis对秒杀商品进行缓存，提升秒杀接口暴露的性能

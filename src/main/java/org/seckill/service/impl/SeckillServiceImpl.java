@@ -2,6 +2,7 @@ package org.seckill.service.impl;
 
 import org.seckill.dao.SeckillDao;
 import org.seckill.dao.SuccessKilledDao;
+import org.seckill.dao.cache.RedisDao;
 import org.seckill.dto.Exposer;
 import org.seckill.dto.SeckillExecution;
 import org.seckill.entity.Seckill;
@@ -24,10 +25,13 @@ import java.util.List;
 @Service
 public class SeckillServiceImpl implements SeckillService {
 
-    private Logger logger = LoggerFactory.getLogger(SeckillServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(SeckillServiceImpl.class);
 
     @Autowired
     private SeckillDao seckillDao;
+
+    @Autowired
+    private RedisDao redisDao;
 
     @Autowired
     private SuccessKilledDao successKilledDao;
@@ -43,24 +47,25 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     public Exposer exportSeckillUrl(long seckillId) {
-        Seckill seckill = seckillDao.queryById(seckillId);
+        // 从redis缓存中获取信息
+        Seckill seckill = redisDao.getSeckill(seckillId);
         if (seckill == null) {
-            return new Exposer.Builder(false, seckillId).build();
+            seckill = seckillDao.queryById(seckillId);
+            if (seckill == null) {
+                return new Exposer.Builder(false, seckillId).build();
+            }
+            redisDao.putSeckill(seckill);
         }
+
         Date startTime = seckill.getStartTime();
         Date endTime = seckill.getEndTime();
         Date nowTime = new Date();
         if (nowTime.getTime() < startTime.getTime() || nowTime.getTime() > endTime.getTime()) {
-             return new Exposer.Builder(false, seckillId).now(nowTime.getTime()).start(startTime.getTime()).end(endTime.getTime()).build();
+            return new Exposer.Builder(false, seckillId).now(nowTime.getTime()).start(startTime.getTime()).end(endTime.getTime()).build();
         }
 
         String md5 = getMd5(seckillId);
         return new Exposer.Builder(true, seckillId).md5(md5).build();
-    }
-
-    private String getMd5(long seckillId){
-        String base = seckillId + salt;
-        return DigestUtils.md5DigestAsHex(base.getBytes());
     }
 
     @Transactional
@@ -70,6 +75,7 @@ public class SeckillServiceImpl implements SeckillService {
                 throw new SeckillException("秒杀数据被篡改");
             }
 
+            /* 更换SQL语句 避免sql语句执行串行化
             int updateCount = seckillDao.reduceNumber(seckillId, new Date());
             if (updateCount <= 0) {
                 throw new SeckillCloseException("秒杀结束");
@@ -81,14 +87,26 @@ public class SeckillServiceImpl implements SeckillService {
                     SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
                     return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS);
                 }
+            }*/
+            int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
+            if (insertCount <= 0) {
+                throw new RepeatKillException(userPhone + "重复秒杀");
+            } else {
+                int updateCount = seckillDao.reduceNumber(seckillId, new Date());
+                if (updateCount <= 0) {
+                    throw new SeckillCloseException("秒杀结束");
+                } else {
+                    SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
+                    return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS, successKilled);
+                }
             }
-        } catch (SeckillCloseException e){
+        } catch (SeckillCloseException e) {
             throw e;
 
         } catch (RepeatKillException e) {
             throw e;
 
-        } catch (SeckillException e){
+        } catch (SeckillException e) {
             throw e;
 
         } catch (Exception e) {
@@ -96,5 +114,10 @@ public class SeckillServiceImpl implements SeckillService {
             throw new SeckillException("服务器内部错误");
         }
 
+    }
+
+    private String getMd5(long seckillId) {
+        String base = seckillId + salt;
+        return DigestUtils.md5DigestAsHex(base.getBytes());
     }
 }
